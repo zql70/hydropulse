@@ -1,0 +1,27 @@
+name: hydropulse
+description: HydroPulse - 智能饮水健康管理APP
+publish_to: 'none'
+version: 2.4.1+1
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2
+  fl_chart: ^0.70.2
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.1
+  shared_preferences: ^2.3.4
+  google_fonts: ^6.2.1
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
