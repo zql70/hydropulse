@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
+import '../providers/settings_provider.dart';
 import 'dashboard_page.dart';
 import 'statistics_page.dart';
 import 'achievement_page.dart';
@@ -61,23 +64,43 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.outlineVariant),
-              ),
-              child: ClipOval(
-                child: Container(
-                  color: AppColors.primaryContainer,
-                  child: const Icon(
-                    Icons.person,
-                    color: AppColors.onPrimary,
-                    size: 20,
+            child: Consumer<SettingsProvider>(
+              builder: (context, settings, _) {
+                final avatarUrl = settings.profile.avatarUrl;
+                return Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.outlineVariant),
                   ),
-                ),
-              ),
+                  child: ClipOval(
+                    child: avatarUrl.isNotEmpty && File(avatarUrl).existsSync()
+                        ? Image.file(
+                            File(avatarUrl),
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: AppColors.primaryContainer,
+                              child: const Icon(
+                                Icons.person,
+                                color: AppColors.onPrimary,
+                                size: 20,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: AppColors.primaryContainer,
+                            child: const Icon(
+                              Icons.person,
+                              color: AppColors.onPrimary,
+                              size: 20,
+                            ),
+                          ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -134,13 +157,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: _currentIndex == 0
-          ? FloatingActionButton(
-              onPressed: () {},
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, size: 28),
-            )
-          : null,
     );
   }
 }

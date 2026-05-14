@@ -62,80 +62,39 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Bento grid: Drink Score + Avg Water Temp
-            Row(
-              children: [
-                Expanded(child: _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+            // Drink Score card
+            _GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '饮水评分',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                            ),
-                          ),
-                          const Icon(Icons.verified, color: AppColors.secondary, size: 20),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
                       Text(
-                        '${provider.drinkScore}',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppColors.onSurface,
-                        ),
-                      ),
-                      Text(
-                        '表现优秀',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: AppColors.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-                const SizedBox(width: 12),
-                Expanded(child: _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '平均水温',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                            ),
-                          ),
-                          const Icon(Icons.device_thermostat, color: AppColors.error, size: 20),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '22°C',
-                        style: TextStyle(
-                          fontFamily: 'Sora',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.onSurface,
-                        ),
-                      ),
-                      Text(
-                        '理想范围',
+                        '饮水评分',
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: AppColors.onSurfaceVariant,
                         ),
                       ),
+                      const Icon(Icons.verified, color: AppColors.secondary, size: 20),
                     ],
                   ),
-                )),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    '${provider.drinkScore}',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.onSurface,
+                    ),
+                  ),
+                  Text(
+                    '表现优秀',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: AppColors.secondary,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
 
