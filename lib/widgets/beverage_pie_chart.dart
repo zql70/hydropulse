@@ -46,7 +46,7 @@ class BeveragePieChart extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${(breakdown['水'] ?? 0 * 100).toStringAsFixed(0)}%',
+                '${((breakdown['水'] ?? 0) * 100).toStringAsFixed(0)}%',
                 style: const TextStyle(
                   fontFamily: 'Sora',
                   fontSize: 20,

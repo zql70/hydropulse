@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
+import '../models/drink_record.dart';
 import '../providers/hydration_provider.dart';
+import '../providers/settings_provider.dart';
 import '../widgets/circular_progress_gauge.dart';
 import '../widgets/volume_chips.dart';
 import '../widgets/beverage_grid.dart';
@@ -14,9 +16,10 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<HydrationProvider>(
       builder: (context, provider, _) {
-        final progress = provider.dailyProgress;
+        final settings = context.watch<SettingsProvider>();
+        final goal = settings.profile.dailyGoalMl;
         final intake = provider.currentIntake;
-        final goal = provider.dailyGoal;
+        final progress = goal > 0 ? intake / goal : 0.0;
 
         return ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -111,6 +114,9 @@ class DashboardPage extends StatelessWidget {
             VolumeChips(
               selected: provider.selectedVolume,
               onSelected: provider.selectVolume,
+              customVolumes: provider.customVolumes,
+              onAddCustom: provider.addCustomVolume,
+              onRemoveCustom: provider.removeCustomVolume,
             ),
             const SizedBox(height: 12),
 
@@ -145,6 +151,10 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+
+            // Today's Records
+            _TodayRecordsList(records: provider.todayRecords),
             const SizedBox(height: 24),
 
             // Insight Banner
@@ -185,6 +195,187 @@ class _GlassCard extends StatelessWidget {
         ],
       ),
       child: child,
+    );
+  }
+}
+
+class _TodayRecordsList extends StatelessWidget {
+  final List<DrinkRecord> records;
+
+  const _TodayRecordsList({required this.records});
+
+  IconData _iconForType(DrinkType type) => switch (type) {
+    DrinkType.water => Icons.water_drop,
+    DrinkType.coffee => Icons.coffee,
+    DrinkType.tea => Icons.emoji_food_beverage,
+    DrinkType.isotonic => Icons.bolt,
+    DrinkType.alcohol => Icons.wine_bar,
+  };
+
+  Color _colorForType(DrinkType type) => switch (type) {
+    DrinkType.water => AppColors.primary,
+    DrinkType.coffee => const Color(0xFF6F4E37),
+    DrinkType.tea => AppColors.secondary,
+    DrinkType.isotonic => const Color(0xFFE8752A),
+    DrinkType.alcohol => AppColors.error,
+  };
+
+  String _formatTime(DateTime dt) {
+    final h = dt.hour.toString().padLeft(2, '0');
+    final m = dt.minute.toString().padLeft(2, '0');
+    return '$h:$m';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '今日记录',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: AppColors.onSurface,
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (records.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.outlineVariant),
+            ),
+            child: Text(
+              '今天还没有记录，快喝杯水吧！',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+          )
+        else
+          ...records.asMap().entries.map((e) {
+            final idx = e.key;
+            final r = e.value;
+            final isFirst = idx == 0;
+            final isLast = idx == records.length - 1;
+            return _RecordTile(
+              icon: _iconForType(r.type),
+              iconColor: _colorForType(r.type),
+              label: r.type.label,
+              volume: '${r.volume}ml',
+              time: _formatTime(r.timestamp),
+              isFirst: isFirst,
+              isLast: isLast,
+              onDelete: () {
+                context.read<HydrationProvider>().removeRecord(r.id);
+              },
+            );
+          }),
+      ],
+    );
+  }
+}
+
+class _RecordTile extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String volume;
+  final String time;
+  final bool isFirst;
+  final bool isLast;
+  final VoidCallback onDelete;
+
+  const _RecordTile({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.volume,
+    required this.time,
+    required this.isFirst,
+    required this.isLast,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          left: BorderSide(color: AppColors.outlineVariant),
+          right: BorderSide(color: AppColors.outlineVariant),
+          top: const BorderSide(color: AppColors.outlineVariant),
+          bottom: isLast
+              ? const BorderSide(color: AppColors.outlineVariant)
+              : BorderSide.none,
+        ),
+        borderRadius: BorderRadius.vertical(
+          top: isFirst ? const Radius.circular(12) : Radius.zero,
+          bottom: isLast ? const Radius.circular(12) : Radius.zero,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.onSurface,
+                    ),
+                  ),
+                  Text(
+                    time,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              volume,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontFamily: 'Sora',
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(width: 8),
+            SizedBox(
+              width: 36,
+              height: 36,
+              child: IconButton(
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete_outline, size: 20),
+                color: AppColors.onSurfaceVariant,
+                padding: EdgeInsets.zero,
+                style: IconButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

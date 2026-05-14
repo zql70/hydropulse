@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
 import '../providers/settings_provider.dart';
+import '../providers/hydration_provider.dart';
 import '../widgets/settings_toggle_tile.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -453,6 +454,9 @@ class ProfilePage extends StatelessWidget {
       final goal = int.tryParse(result);
       if (goal != null && goal > 0) {
         await settings.updateDailyGoal(goal);
+        if (context.mounted) {
+          context.read<HydrationProvider>().setDailyGoal(goal);
+        }
       }
     }
   }
@@ -678,6 +682,9 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     final goal = int.tryParse(_goalCtrl.text);
     if (goal != null && goal > 0) {
       await _settings.updateDailyGoal(goal);
+      if (mounted) {
+        context.read<HydrationProvider>().setDailyGoal(goal);
+      }
     }
     if (mounted) Navigator.pop(context);
   }

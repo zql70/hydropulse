@@ -13,7 +13,8 @@ void main() async {
   await settingsProvider.init();
 
   final hydrationProvider = HydrationProvider();
-  hydrationProvider.seedDemoData();
+  hydrationProvider.setDailyGoal(settingsProvider.profile.dailyGoalMl);
+  await hydrationProvider.init();
 
   final achievementProvider = AchievementProvider();
   final notificationProvider = NotificationProvider();

@@ -51,4 +51,20 @@ class DrinkRecord {
   }) : coefficient = type.coefficient;
 
   double get effectiveVolume => volume * coefficient;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type.index,
+        'volume': volume,
+        'timestamp': timestamp.millisecondsSinceEpoch,
+      };
+
+  factory DrinkRecord.fromJson(Map<String, dynamic> json) {
+    return DrinkRecord(
+      id: json['id'] as String,
+      type: DrinkType.values[json['type'] as int],
+      volume: json['volume'] as int,
+      timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
+    );
+  }
 }
