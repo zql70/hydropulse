@@ -74,8 +74,8 @@ class HourlyVerticalBarChart extends StatelessWidget {
                                   ),
                                   gradient: d.value > 0
                                       ? const LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
                                           colors: [_lightBlue, _darkBlue],
                                         )
                                       : null,
@@ -104,7 +104,7 @@ class HourlyVerticalBarChart extends StatelessWidget {
                           _bucketLabel(d.key),
                           style: const TextStyle(
                             fontSize: 9,
-                            color: Color(0xFF9E9E9E),
+                            color: _darkBlue,
                           ),
                         ),
                       ),
@@ -149,7 +149,7 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFEEEEEE)
+      ..color = const Color(0xFFE3F2FD)
       ..strokeWidth = 0.5;
     final y = size.height - bottomY;
     canvas.drawLine(

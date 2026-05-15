@@ -365,13 +365,14 @@ class _BadgeTile extends StatelessWidget {
   }
 
   void _showDetail(BuildContext context) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) {
-        return Padding(
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -440,6 +441,7 @@ class _BadgeTile extends StatelessWidget {
               ],
             ],
           ),
+        ),
         );
       },
     );
