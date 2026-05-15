@@ -7,11 +7,11 @@ class UserProfile {
   final String location;
 
   const UserProfile({
-    this.name = 'Alex Henderson',
+    this.name = '请输入姓名',
     this.avatarUrl = '',
-    this.height,
-    this.weight,
-    this.dailyGoalMl = 2850,
+    this.height = 180.0,
+    this.weight = 70.0,
+    this.dailyGoalMl = 2000,
     this.location = '旧金山',
   });
 

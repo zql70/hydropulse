@@ -17,6 +17,11 @@ void main() async {
   await hydrationProvider.init();
 
   final achievementProvider = AchievementProvider();
+  achievementProvider.recompute(
+    hydrationProvider.records,
+    settingsProvider.profile.dailyGoalMl,
+  );
+
   final notificationProvider = NotificationProvider();
 
   runApp(

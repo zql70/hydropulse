@@ -5,7 +5,6 @@ import '../models/drink_record.dart';
 
 class HydrationProvider extends ChangeNotifier {
   static const _storageKey = 'drink_records';
-  static const _demoSeededKey = 'demo_seeded';
   static const _customVolumesKey = 'custom_volumes';
 
   int _dailyGoal = 2000;
@@ -158,10 +157,6 @@ class HydrationProvider extends ChangeNotifier {
       }
     }
 
-    // Fall back to demo data only if no records exist at all
-    if (totals.every((t) => t == 0) && _records.isEmpty) {
-      return [0.5, 0.4, 0.7, 0.6, 0.9, 0.8, 0.35];
-    }
     return totals.map((t) => t < 0 ? 0.0 : t).toList();
   }
 
@@ -183,23 +178,6 @@ class HydrationProvider extends ChangeNotifier {
   Future<void> init() async {
     await _loadRecords();
     await _loadCustomVolumes();
-    if (_customVolumes.isEmpty) {
-      final prefs = await SharedPreferences.getInstance();
-      final wasSeeded = prefs.getBool('custom_volumes_seeded') ?? false;
-      if (!wasSeeded) {
-        _customVolumes.addAll([450, 400, 350, 250, 150, 100, 50]);
-        await _persistCustomVolumes();
-        await prefs.setBool('custom_volumes_seeded', true);
-      }
-    }
-    if (_records.isEmpty) {
-      final prefs = await SharedPreferences.getInstance();
-      final seeded = prefs.getBool(_demoSeededKey) ?? false;
-      if (!seeded) {
-        seedDemoData();
-        await prefs.setBool(_demoSeededKey, true);
-      }
-    }
   }
 
   Future<void> _loadRecords() async {
@@ -240,18 +218,4 @@ class HydrationProvider extends ChangeNotifier {
     await prefs.setString(_customVolumesKey, jsonEncode(_customVolumes));
   }
 
-  void seedDemoData() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    _records.addAll([
-      DrinkRecord(id: 'd1', type: DrinkType.water, volume: 300, timestamp: today.add(const Duration(hours: 8, minutes: 30))),
-      DrinkRecord(id: 'd2', type: DrinkType.water, volume: 200, timestamp: today.add(const Duration(hours: 10, minutes: 15))),
-      DrinkRecord(id: 'd3', type: DrinkType.coffee, volume: 250, timestamp: today.add(const Duration(hours: 11, minutes: 0))),
-      DrinkRecord(id: 'd4', type: DrinkType.water, volume: 300, timestamp: today.add(const Duration(hours: 13, minutes: 45))),
-      DrinkRecord(id: 'd5', type: DrinkType.water, volume: 250, timestamp: today.add(const Duration(hours: 15, minutes: 20))),
-    ]);
-    _persistRecords();
-    notifyListeners();
-  }
 }

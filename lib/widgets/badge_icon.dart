@@ -7,6 +7,8 @@ class BadgeIcon extends StatelessWidget {
 
   const BadgeIcon({super.key, required this.badge});
 
+  IconData get _iconData => Icons.emoji_events;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,7 +37,7 @@ class BadgeIcon extends StatelessWidget {
                 : null,
           ),
           child: Icon(
-            badge.isUnlocked ? badge.icon : Icons.lock,
+            badge.isUnlocked ? _iconData : Icons.lock,
             color: badge.isUnlocked ? Colors.white : AppColors.outline,
             size: 32,
           ),

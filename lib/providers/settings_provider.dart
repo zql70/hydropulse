@@ -26,11 +26,11 @@ class SettingsProvider extends ChangeNotifier {
     _unit = VolumeUnit.values[prefs.getInt('unit') ?? 0];
     _themeMode = ThemeMode.values[prefs.getInt('themeMode') ?? 0];
     _profile = UserProfile(
-      name: prefs.getString('profile_name') ?? 'Alex Henderson',
+      name: prefs.getString('profile_name') ?? '请输入姓名',
       avatarUrl: prefs.getString('profile_avatarUrl') ?? '',
-      height: prefs.getDouble('profile_height'),
-      weight: prefs.getDouble('profile_weight'),
-      dailyGoalMl: prefs.getInt('profile_dailyGoal') ?? 2850,
+      height: prefs.getDouble('profile_height') ?? 180.0,
+      weight: prefs.getDouble('profile_weight') ?? 70.0,
+      dailyGoalMl: prefs.getInt('profile_dailyGoal') ?? 2000,
       location: prefs.getString('profile_location') ?? '旧金山',
     );
     _initialized = true;
