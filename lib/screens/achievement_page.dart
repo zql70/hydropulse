@@ -33,7 +33,9 @@ class _AchievementPageState extends State<AchievementPage> {
 
     return Consumer<AchievementProvider>(
       builder: (context, provider, _) {
-        provider.recompute(hydration.records, goal);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          provider.recompute(hydration.records, goal);
+        });
 
         final filtered = _activeCategory == AchievementCategory.all
             ? provider.badges
