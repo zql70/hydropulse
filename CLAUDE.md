@@ -68,3 +68,7 @@ flutter build apk
 - `shared_preferences` - Local storage
 - `google_fonts` - Typography
 - `image_picker` - Avatar selection
+
+## Coding Guidelines
+
+When writing, reviewing, or refactoring code, invoke the `andrej-karpathy-skills:karpathy-guidelines` skill. Follow its guidance: avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
